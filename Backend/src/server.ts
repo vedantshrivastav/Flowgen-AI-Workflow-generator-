@@ -24,7 +24,7 @@ app.use(bodyParser.json());
 
 // db connection function
 
-function connecttoDb(){
+export default function connectDb(){
   mongoose.connect(MONGO_URL)
   .then(() => {
     console.log('Connected to MongoDB');
@@ -36,7 +36,7 @@ function connecttoDb(){
     console.error('Failed to connect to MongoDB', err);
   });
 }
-connecttoDb()
+connectDb()
 
 const API_KEY = process.env.API_KEY
 const genAI = new GoogleGenerativeAI(API_KEY!);
