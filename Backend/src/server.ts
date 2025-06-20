@@ -4,14 +4,39 @@ import bodyParser from 'body-parser';
 import { error } from 'console';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 // import diagramRoute from './routes/diagramRoute';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv'
+
+// dotenv.config()
+
+
 
 const app = express();
 const PORT = 5000;
 
 require('dotenv').config()
+
+const MONGO_URL = process.env.MONGO_URI as string
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+
+
+// db connection function
+
+function connecttoDb(){
+  mongoose.connect(MONGO_URL)
+  .then(() => {
+    console.log('Connected to MongoDB');
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  })
+  .catch(err => {
+    console.error('Failed to connect to MongoDB', err);
+  });
+}
+connecttoDb()
 
 const API_KEY = process.env.API_KEY
 const genAI = new GoogleGenerativeAI(API_KEY!);
@@ -65,8 +90,4 @@ app.post('/generate-daigrams', async (req,res) => {
 export function mermaidresponse(resp: any){
     return resp.text.replace(/```mermaid|```/g, "").trim();
 }
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-//   console.log(`Hello from typescript`)
-});
+
